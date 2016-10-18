@@ -43,12 +43,20 @@ combination _ 0 = [[]]
 combination [] k = []
 combination (x:xs) k =  map (x:) ( combination xs (k - 1) )  ++  combination xs k
 
-permutation :: [a] -> [[a]]
+permutation :: Eq a => [a] -> [[a]]
 permutation [] = [[]]
-permutation x = concat $ map (kuwa x) [1..length x]
-    where 
-        kuwa x n = map ((x !! (n-1)) :) $ permutation $ cofactor x n
-        cofactor x n = take (n-1) x ++ drop n x
+permutation xs = do
+    x <- xs
+    map (x:) (permutation $ delete x xs)
+
+{- KUWA KUWA KUWA
+	coinSum :: Integral a => [a] -> a -> [[a]]
+		coinSum _ 0 = [[]]
+		coinSum [x] n
+		| mod n x /= 0 = []
+		| otherwise = map (x:) $ coinSum (x:[]) (n - x)
+		coinSum (x:xs) n = (coinSum xs n) ++ (map (x :) (coinSum (x:xs) (n - x)))
+KUWA KUWA KUWA -}
 
 collatz :: Integral a => a -> [a]
 collatz 1 = 1 : []
