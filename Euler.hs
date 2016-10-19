@@ -49,14 +49,14 @@ permutation xs = do
     x <- xs
     map (x:) (permutation $ delete x xs)
 
-{- KUWA KUWA KUWA
-	coinSum :: Integral a => [a] -> a -> [[a]]
-		coinSum _ 0 = [[]]
-		coinSum [x] n
-		| mod n x /= 0 = []
-		| otherwise = map (x:) $ coinSum (x:[]) (n - x)
-		coinSum (x:xs) n = (coinSum xs n) ++ (map (x :) (coinSum (x:xs) (n - x)))
-KUWA KUWA KUWA -}
+coinSum :: Integral a => [a] -> a -> [[a]]
+coinSum _ 0 = [[]]
+coinSum xs n
+    | n < 0 = []
+coinSum [x] n
+    | mod n x /= 0 = []
+    | otherwise = map (x:) $ coinSum (x:[]) (n - x)
+coinSum (x:xs) n = (map (x :) $ coinSum (x:xs) (n - x)) ++ (coinSum xs n)
 
 collatz :: Integral a => a -> [a]
 collatz 1 = 1 : []
