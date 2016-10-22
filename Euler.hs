@@ -34,6 +34,12 @@ digitSum :: Integral a => a -> a
 digitSum 0 = 0
 digitSum n = (mod n 10) + digitSum ( div n 10 )
 
+getDigit :: Integral a => a -> Int -> a
+getDigit n i
+    | i == 0 = mod n 10
+    | i > 0 = div (mod n (10 ^ (i+1))) (10 ^ i)
+    | otherwise = 0
+
 factorial :: Integral a => a -> a
 factorial 0 = 1
 factorial n = n * factorial (n - 1)
