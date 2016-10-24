@@ -1,16 +1,23 @@
 module Euler where
 import Data.List
 
+---
+
 primes :: Integral a => [a]
 primes = 2 : filter isPrime [3,5..]
 
 isPrime :: Integral a => a -> Bool
-isPrime x = all ( ( 0 /= ) . mod x ) $ takeWhile ( ( <= x ) . ( ^ 2 ) ) primes
+isPrime x
+    | x > 1 = all ( ( 0 /= ) . mod x ) $ takeWhile ( ( <= x ) . ( ^ 2 ) ) primes
+    | otherwise = False
 
 factorize :: Integral a => a -> [a]
-factorize 1 = []
-factorize n = smallPrime : factorize ( n `div` smallPrime )
-    where smallPrime = head $ filter ( ( 0 == ) . mod n ) primes
+factorize n = fact n 2
+
+fact :: Integral a => a -> a -> [a]
+fact 1 _ = []
+fact n acc = (smallPrime) : fact ( n `div` smallPrime ) smallPrime
+    where smallPrime = head $ filter ( ( 0 == ) . mod n ) $ filter ( acc <= ) primes
 
 factorize' :: Integral a => a -> [(a, Int)]
 factorize' n = map (\xs -> (head xs, length xs)) (group $ factorize n)
@@ -30,6 +37,8 @@ divisorSum n = product $ map (\x -> sum $ map ( (fst x) ^ ) [0..snd x]) $ factor
 divisorSum' :: Integral a =>  a -> a
 divisorSum' n = ( product $ map (\x -> sum $ map ( (fst x) ^ ) [0..snd x]) $ factorize' n ) - n
 
+---
+
 digitSum :: Integral a => a -> a
 digitSum 0 = 0
 digitSum n = (mod n 10) + digitSum ( div n 10 )
@@ -40,6 +49,8 @@ getDigit n i
     | i > 0 = div (mod n (10 ^ (i+1))) (10 ^ i)
     | otherwise = 0
 
+---
+
 factorial :: Integral a => a -> a
 factorial 0 = 1
 factorial n = n * factorial (n - 1)
@@ -49,20 +60,33 @@ combination _ 0 = [[]]
 combination [] k = []
 combination (x:xs) k =  map (x:) ( combination xs (k - 1) )  ++  combination xs k
 
-permutation :: Eq a => [a] -> [[a]]
-permutation [] = [[]]
-permutation xs = do
+permutations' :: Eq a => [a] -> [[a]]
+permutations' [] = [[]]
+permutations' xs = do
     x <- xs
-    map (x:) (permutation $ delete x xs)
+    map (x:) (permutations' $ delete x xs)
 
 coinSum :: Integral a => [a] -> a -> [[a]]
-coinSum _ 0 = [[]]
-coinSum xs n
+coinSum _ n
+    | n == 0 = [[]]
     | n < 0 = []
 coinSum [x] n
     | mod n x /= 0 = []
     | otherwise = map (x:) $ coinSum (x:[]) (n - x)
 coinSum (x:xs) n = (map (x :) $ coinSum (x:xs) (n - x)) ++ (coinSum xs n)
+
+directionaryOrder :: (Ord a) => [a] -> Int
+directionaryOrder [] = 1
+directionaryOrder all@(x:xs) = (order (sort all) x) * factorial (length xs) + directionaryOrder (xs)
+
+order :: (Eq a) => [a] -> a -> Int
+order xs y = iter xs y 0
+    where
+        iter (x:xs) y acc
+            | x == y = acc
+            | x /= y = iter xs y (acc + 1)
+
+---
 
 collatz :: Integral a => a -> [a]
 collatz 1 = 1 : []
