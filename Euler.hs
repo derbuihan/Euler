@@ -3,12 +3,12 @@ import Data.List
 
 ---
 
-primes :: Integral a => [a]
-primes = 2 : filter isPrime [3,5..]
+primes' :: Integral a => [a]
+primes' = 2 : filter isPrime' [3,5..]
 
-isPrime :: Integral a => a -> Bool
-isPrime x
-    | x > 1 = all ((0 /=) . mod x) $ takeWhile ((<= x) . (^ 2)) primes
+isPrime' :: Integral a => a -> Bool
+isPrime' x
+    | x > 1 = all ((0 /=) . mod x) $ takeWhile ((<= x) . (^ 2)) primes'
     | otherwise = False
 
 factorize :: Integral a => a -> [a]
@@ -16,7 +16,7 @@ factorize n = fact n 2
     where
         fact 1 _ = []
         fact n acc = (smallPrime) : fact (n `div` smallPrime) smallPrime
-            where smallPrime = head $ filter ((0 ==) . mod n) $ filter (acc <=) primes
+            where smallPrime = head $ filter ((0 ==) . mod n) $ filter (acc <=) primes'
 
 factorize' :: Integral a => a -> [(a, Int)]
 factorize' n = map (\xs -> (head xs, length xs)) (group $ factorize n)
