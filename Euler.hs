@@ -1,5 +1,6 @@
 module Euler where
 import Data.List
+import Data.Numbers.Primes
 
 ---
 
@@ -10,6 +11,9 @@ isPrime' :: Integral a => a -> Bool
 isPrime' x
     | x > 1 = all ((0 /=) . mod x) $ takeWhile ((<= x) . (^ 2)) primes'
     | otherwise = False
+
+composite :: Integral a => [a]
+composite = filter (not . isPrime) [4..]
 
 factorize :: Integral a => a -> [a]
 factorize n = fact n 2
@@ -129,6 +133,12 @@ fibs = 1 : 1 :  zipWith (+) fibs ( tail fibs )
 
 triangularNumber :: Integral a => [a]
 triangularNumber = map (\n -> n * (n + 1) `div` 2) [1..]
+
+pentagonalNumber :: Integral a => [a]
+pentagonalNumber = map (\n -> n * (3 * n - 1) `div` 2) [1..]
+
+hexagonalNumber :: Integral a => [a]
+hexagonalNumber = map (\n -> n * (2 * n - 1)) [1..]
 
 amicable :: Integral a => [a]
 amicable = [n |  n <- [1..10000], n == (divisorSum . divisorSum) n, n /= divisorSum n]
