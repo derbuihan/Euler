@@ -40,6 +40,9 @@ divisorSum n = product $ map (\x -> sum $ map ((fst x) ^) [0..snd x]) $ factoriz
 divisorSum' :: Integral a =>  a -> a
 divisorSum' n = (product $ map (\x -> sum $ map ((fst x) ^) [0..snd x]) $ factorize' n) - n
 
+eulerFunc :: Integral a => a -> Int
+eulerFunc n = length $ filter ((== 1) . gcd n) [1..(n - 1)]
+
 ---
 
 toDigitList :: Integral a => a -> [a]
